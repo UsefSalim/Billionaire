@@ -8,6 +8,11 @@ const mongoose = require('mongoose');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+const { log: terminal } = console;
+
+const authAPi = require('./routes/auth.routes')
+const Room = require('./models/room.model')
+const User = require('./models/user.model')
 // Middleware
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -20,11 +25,14 @@ mongoose
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
-  .then(() => console.log('Mongo Db Connected'))
-  .catch((err) => console.log(`error connection to the DataBase : ${err}`));
+  .then(() => terminal('Mongo Db Connected'))
+  .catch((err) => terminal(`error connection to the DataBase : ${err}`));
 // Routes
+
+
+app.use('/api/auth', authAPi)
 
 // app express
 app.listen(PORT, () => {
-  console.log(`app listning : localhost:${PORT}`);
+  terminal(`app listning : localhost:${PORT}`);
 });
