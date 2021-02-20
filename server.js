@@ -10,9 +10,8 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 const { log: terminal } = console;
 
-const authAPi = require('./routes/auth.routes')
-const Room = require('./models/room.model')
-const User = require('./models/user.model')
+const authAPi = require('./routes/auth.routes');
+const roomApi = require('./routes/room.routes');
 // Middleware
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -29,8 +28,8 @@ mongoose
   .catch((err) => terminal(`error connection to the DataBase : ${err}`));
 // Routes
 
-
-app.use('/api/auth', authAPi)
+app.use('/api/auth', authAPi);
+app.use('/api/admin/room', roomApi);
 
 // app express
 app.listen(PORT, () => {

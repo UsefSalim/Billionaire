@@ -8,12 +8,12 @@ const UserSchema = new Schema({
     required: true,
     minlength: 5,
     maxlength: 255,
-    trim:true
+    trim: true,
   },
   email: {
     type: String,
     required: true,
-    trim:true
+    trim: true,
   },
   password: {
     type: String,
@@ -22,17 +22,17 @@ const UserSchema = new Schema({
   number: {
     type: Number,
     required: true,
-    unique:true,
+    unique: true,
   },
-  is_valid:{
+  is_valid: {
     type: Boolean,
-    default : false,
+    default: false,
   },
-  role:{
-    type:String,
-    enum: ['User','Admin'],
-    default: 'User'
-  }
+  role: {
+    type: String,
+    enum: ['User', 'Admin'],
+    default: 'User',
+  },
 });
 const User = mongoose.model('User', UserSchema);
 

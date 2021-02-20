@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt')
+const bcrypt = require('bcrypt');
 // -------------require models----------  //
-const User = require('../models/user.model');
+const { User } = require('../models/user.model');
 
 // -------------require validations----------  //
 // const {
@@ -23,14 +23,16 @@ const createToken = (id) =>
 */
 exports.register = async (req, res) => {
   // verification if mail exist
-  const ifExist = await User.User.findOne({ number: req.body.number });
+  const ifExist = await User.findOne({ number: req.body.number });
   ifExist &&
-    res.status(400).json({ message: 'ce compte est deja existant veillez vous connecter' });
+    res
+      .status(400)
+      .json({ message: 'ce compte est deja existant veillez vous connecter' });
   // error validations
   // const { error } = registerValidations(req.body);
   // error && res.status(400).json(error.details[0].message);
   /// create User
-  const registerUser = new User.User({
+  const registerUser = new User({
     ...req.body,
   });
   /// Hash the password
@@ -58,7 +60,7 @@ exports.login = async (req, res) => {
   // const { error } = loginValidations(req.body);
   // error && res.status(400).json(error.details[0].message);
   // verification if mail exist
-  const ifUserExist = await User.User.findOne({ email: req.body.email });
+  const ifUserExist = await User.findOne({ number: req.body.number });
   // verif password
   const validPassword = await bcrypt.compare(
     req.body.password,
@@ -67,7 +69,6 @@ exports.login = async (req, res) => {
   (!ifUserExist || !validPassword) &&
     res.status(400).json({ message: 'mail ou password incorrect ' });
   // Add JsonWebToken
-  // console.log(ifUserExist._id);
   const token = createToken(ifUserExist._id);
   /// secure:true  deployement Mode !!!
   res.cookie('log_token', token, { httpOnly: true, maxAge });

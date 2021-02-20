@@ -1,4 +1,5 @@
-const express = require('express')
+const express = require('express');
+
 const router = express.Router();
 
 const { register, login, logout } = require('../controllers/auth.controller');
@@ -22,6 +23,5 @@ router.post('/login', login);
      @Access : Pubic
 */
 router.post('/logout', logout);
-
 
 module.exports = router;
