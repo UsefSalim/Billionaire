@@ -12,11 +12,11 @@ const { auth } = require('../middleware/auth.middleware');
 */
 router.get('/', auth, profile);
 
-/* ! @Route  : POST => /api/admin/room
+/* ! @Route  : POST => /api/admin/room/createroom
      Desc    : create a room 
      @Access : Pubic
 */
-router.post('/createroom', createRoom);
+router.get('/createroom', auth, createRoom);
 
 // /* ! @Route  : POST => api/auth/logout
 //      Desc    : logout Auth

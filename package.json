@@ -4,8 +4,7 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "dev": "nodemon server.js",
-    "eslint": "npm i -D prettier eslint eslint-config-prettier eslint-plugin-prettier eslint-plugin-import eslint-config-airbnb-base"
+    "dev": "nodemon server.js"
   },
   "author": "",
   "license": "ISC",

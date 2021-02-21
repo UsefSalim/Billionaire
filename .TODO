@@ -40,7 +40,7 @@ Quiter room
 //    const getRoom = await Room.find({_id:'6030f714abbb2702d02063e8'}).populate('users','name number')
 //    getRoom && res.status(200).json(getRoom)
 //  } catch (error) {
-//    es.status(400).json(error)
+//    res.status(400).json(error)
 //  }
 
 // })
