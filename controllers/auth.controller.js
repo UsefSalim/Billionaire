@@ -4,10 +4,10 @@ const bcrypt = require('bcrypt');
 const { User } = require('../models/user.model');
 
 // -------------require validations----------  //
-// const {
-//   registerValidations,
-//   loginValidations,
-// } = require('../validations/auth.validation');
+const {
+  registerValidations,
+  loginValidations,
+} = require('../validations/auth.validation');
 
 // --------------- create Token ------------//
 const maxAge = 3 * 24 * 60 * 60 * 1000;
@@ -22,32 +22,35 @@ const createToken = (id) =>
      @Access : Pubic
 */
 exports.register = async (req, res) => {
-  // verification if mail exist
-  const ifExist = await User.findOne({ number: req.body.number });
-  ifExist &&
-    res
-      .status(400)
-      .json({ message: 'ce compte est deja existant veillez vous connecter' });
-  // error validations
-  // const { error } = registerValidations(req.body);
-  // error && res.status(400).json(error.details[0].message);
-  /// create User
-  const registerUser = new User({
-    ...req.body,
-  });
-  /// Hash the password
-  const salt = await bcrypt.genSalt(10);
-  const hashdPassword = await bcrypt.hash(req.body.password, salt);
-  registerUser.password = hashdPassword;
   try {
+    // verification if number exist
+    await User.findOne({ number: req.body.number }, (err, data) => {
+      if (err) {
+        return res.status(400).json({
+          message: 'ce compte est deja existant veillez vous connecter',
+        });
+      }
+    });
+    // error validations
+    const { error } = registerValidations(req.body);
+    if (error) return res.status(400).json(error.details[0].message);
+    /// create User
+    const registerUser = new User({
+      ...req.body,
+    });
+    /// Hash the password
+    const salt = await bcrypt.genSalt(10);
+    const hashdPassword = await bcrypt.hash(req.body.password, salt);
+    registerUser.password = hashdPassword;
+
     // insert User In de DataBase
     const addUser = await registerUser.save();
-    addUser &&
-      res
+    if (addUser)
+      return res
         .status(201)
         .json({ message: `User ${req.body.name} created succefully` });
   } catch (err) {
-    res.status(400).json(err);
+    return res.status(400).json(err);
   }
 };
 
@@ -56,23 +59,30 @@ exports.register = async (req, res) => {
      @Access : Pubic
 */
 exports.login = async (req, res) => {
-  // error validations
-  // const { error } = loginValidations(req.body);
-  // error && res.status(400).json(error.details[0].message);
-  // verification if mail exist
-  const ifUserExist = await User.findOne({ number: req.body.number });
-  // verif password
-  const validPassword = await bcrypt.compare(
-    req.body.password,
-    ifUserExist.password
-  );
-  (!ifUserExist || !validPassword) &&
-    res.status(400).json({ message: 'mail ou password incorrect ' });
-  // Add JsonWebToken
-  const token = createToken(ifUserExist._id);
-  /// secure:true  deployement Mode !!!
-  res.cookie('log_token', token, { httpOnly: true, maxAge });
-  res.status(200).json({ message: token });
+  try {
+    // error validations
+    const { error } = loginValidations(req.body);
+    if (error)
+      return res.status(400).json(`validation ${error.details[0].message}`);
+    // verification if number exist
+    const ifUserExist = await User.findOne({ number: req.body.number });
+    if (!ifUserExist)
+      return res.status(400).json({ message: 'mail or password incorrect' });
+    // verif password
+    const validPassword = await bcrypt.compare(
+      req.body.password,
+      ifUserExist.password
+    );
+    if (!validPassword)
+      return res.status(400).json({ message: 'mail or password incorrect' });
+    // Add JsonWebToken
+    const token = createToken(ifUserExist._id);
+    /// secure:true  deployement Mode !!!
+    res.cookie('log_token', token, { httpOnly: true, maxAge });
+    return res.status(200).json({ message: token });
+  } catch (error) {
+    return res.status(400).json(error);
+  }
 };
 
 /* ! @Route  : POST => api/User/logout

@@ -7,7 +7,7 @@ const UserSchema = new Schema({
     type: String,
     required: true,
     minlength: 5,
-    maxlength: 255,
+    maxlength: 50,
     trim: true,
   },
   email: {
@@ -18,11 +18,14 @@ const UserSchema = new Schema({
   password: {
     type: String,
     required: true,
+    minlenght: 6,
+    maxlenght: 1024,
   },
   number: {
     type: Number,
     required: true,
     unique: true,
+    min: 6,
   },
   is_valid: {
     type: Boolean,

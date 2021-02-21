@@ -4,9 +4,10 @@ const Joi = require('joi');
 
 exports.registerValidations = (data) => {
   const schema = Joi.object({
-    name: Joi.string().required().min(3).max(50).trim(),
+    name: Joi.string().required().min(5).max(50).trim(),
     email: Joi.string().email().required().trim(),
-    password: Joi.string().required().min(6),
+    password: Joi.string().required().min(6).max(1024),
+    number: Joi.number().min(10).required(),
   });
 
   return schema.validate(data);
@@ -15,7 +16,7 @@ exports.registerValidations = (data) => {
 
 exports.loginValidations = (data) => {
   const schema = Joi.object({
-    email: Joi.string().email().required().trim(),
+    number: Joi.number().min(10).required(),
     password: Joi.string().required().min(6),
   });
 

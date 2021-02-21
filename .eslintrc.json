@@ -35,7 +35,7 @@
       }
     ],
     "no-plusplus": "off",
-    "complexity": ["error", 4],
+    "complexity": ["error", 6],
     "default-case": "error"
   }
 }
