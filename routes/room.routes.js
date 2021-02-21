@@ -23,10 +23,10 @@ router.get('/', auth, profile);
 */
 router.get('/createroom', auth, createRoom);
 
-/* ! @Route  : GET => /api/admin/room/createroom
+/* ! @Route  : GET => /api/admin/room/rejoindreroom/:id
      Desc    : rejoindre room
      @Access : Private
 */
-router.post('/', auth, rejoindreRoom);
+router.get('/rejoindreroom/:id', auth, rejoindreRoom);
 
 module.exports = router;

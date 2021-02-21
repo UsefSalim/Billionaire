@@ -39,4 +39,14 @@ exports.createRoom = async (req, res) => {
      Desc    : rejoindre room
      @Access : Private
 */
-exports.rejoindreRoom = async (req, res) => {};
+exports.rejoindreRoom = async (req, res) => {
+  try {
+    const currentRoom = await Room.findOne({ _id: req.params.id });
+    currentRoom.users = [...currentRoom.users, res.userId];
+    currentRoom.place -= 1;
+    currentRoom.save();
+    return res.status(201).json(currentRoom);
+  } catch (error) {
+    return res.status(400).json(error);
+  }
+};
