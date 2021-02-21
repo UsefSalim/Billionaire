@@ -1,6 +1,7 @@
 const { User } = require('../models/user.model');
 const Room = require('../models/room.model');
-/* ! @Route  : POST => api/room/
+
+/* ! @Route  : GET => /api/admin/room
      Desc    : profile User
      @Access : Private
 */
@@ -10,19 +11,32 @@ exports.profile = async (req, res) => {
     const currentUser = await User.findOne({ _id: res.userId }).select(
       'name email number'
     );
-    if (currentUser) return res.status(200).json(currentUser);
+    const allRoom = await Room.find();
+    const roomDispo = allRoom.filter((room) => room.users.length <= 3);
+
+    if (currentUser) return res.status(200).json({ currentUser, roomDispo });
   } catch (error) {
     res.status(200).json(error);
   }
 };
 
+/* ! @Route  : GET => /api/admin/room/createroom
+     Desc    : create a room 
+     @Access : Private
+*/
 exports.createRoom = async (req, res) => {
   try {
     const currentUser = await User.findOne({ _id: res.userId });
-    const createRoom = await Room({ users: currentUser });
+    const createRoom = await Room({ users: currentUser._id, place: 3 });
     const saveRoom = createRoom.save();
     if (saveRoom) return res.status(200).json(createRoom);
   } catch (error) {
     res.status(200).json(error);
   }
 };
+
+/* ! @Route  : GET => /api/admin/room/createroom
+     Desc    : rejoindre room
+     @Access : Private
+*/
+exports.rejoindreRoom = async (req, res) => {};

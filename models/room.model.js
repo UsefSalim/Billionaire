@@ -6,10 +6,18 @@ const { Schema } = mongoose;
 //* create a Room Scheme
 
 const RoomSchema = new Schema({
-  users: [UserSchema],
+  users: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+    },
+  ],
   status: {
     type: Boolean,
     default: true,
+  },
+  place: {
+    type: Number,
   },
 });
 
