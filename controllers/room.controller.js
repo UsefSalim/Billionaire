@@ -16,6 +16,12 @@ exports.profile = async (req, res) => {
     const currentUser = await User.findOne({ _id: res.userId }).select(
       '-password'
     );
+    if (currentUser.role === 'Admin') {
+      const invalidUser = await User.find({ is_valid: false }).select(
+        '-password'
+      );
+      return res.status(200).json({ invalidUser });
+    }
     if (currentUser.role === 'User') {
       if (currentUser.is_valid === false)
         return res.status(200).json({
@@ -26,17 +32,9 @@ exports.profile = async (req, res) => {
         return res.status(200).json({
           message: "vous faite deja partie d'une room",
         });
-      const allRoom = await Room.find();
-      const roomDispo = allRoom
-        .filter((room) => room.users.length <= 3)
-        .populate('users');
+      const allRoom = await Room.find().populate('users', 'name');
+      const roomDispo = allRoom.filter((room) => room.users.length <= 3);
       return res.status(200).json({ currentUser, roomDispo });
-    }
-    if (currentUser.role === 'Admin') {
-      const invalidUser = await User.find({ is_valid: false }).select(
-        '-password'
-      );
-      return res.status(200).json({ invalidUser });
     }
   } catch (error) {
     res.status(200).json(error);
@@ -50,6 +48,11 @@ exports.profile = async (req, res) => {
 exports.createRoom = async (req, res) => {
   try {
     const currentUser = await User.findOne({ _id: res.userId });
+    if (currentUser.is_valid === false)
+      return res.status(200).json({
+        message:
+          "votre compte n'est pas valider vous allé recevoir un mail de validation",
+      });
     if (currentUser.role === 'Admin')
       return res
         .status(400)
@@ -86,6 +89,11 @@ exports.createRoom = async (req, res) => {
 exports.rejoindreRoom = async (req, res) => {
   try {
     const currentUser = await User.findOne({ _id: res.userId });
+    if (currentUser.is_valid === false)
+      return res.status(200).json({
+        message:
+          "votre compte n'est pas valider vous allé recevoir un mail de validation",
+      });
     if (currentUser.role === 'Admin')
       return res
         .status(400)
