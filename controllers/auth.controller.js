@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 // -------------require models----------  //
-const { User } = require('../models/user.model');
+const User = require('../models/user.model');
 
 // -------------require validations----------  //
 const {
@@ -75,6 +75,8 @@ exports.login = async (req, res) => {
     );
     if (!validPassword)
       return res.status(400).json({ message: 'mail or password incorrect' });
+    ifUserExist.online = true;
+    ifUserExist.save();
     // Add JsonWebToken
     const token = createToken(ifUserExist._id);
     /// secure:true  deployement Mode !!!
@@ -90,7 +92,12 @@ exports.login = async (req, res) => {
      @Access : Pubic
 */
 
-exports.logout = (req, res) => {
+exports.logout = async (req, res) => {
+  const currentUser = await User.findOne({ _id: res.userId }).select(
+    '-password'
+  );
+  currentUser.online = false;
+  currentUser.save();
   res.cookie('log_token', '', { maxAge: 1 });
   res.redirect('/');
 };

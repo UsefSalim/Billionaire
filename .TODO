@@ -44,3 +44,8 @@ Quiter room
 //  }
 
 // })
+
+
+
+
+.populate('users','les propriété a recuperer ') => recuperer les utulisateur d'une room 

@@ -31,6 +31,19 @@ const UserSchema = new Schema({
     type: Boolean,
     default: false,
   },
+  online: {
+    type: Boolean,
+    default: false,
+  },
+  disponible: {
+    type: Boolean,
+    default: true,
+  },
+  room: {
+    type: Schema.Types.ObjectId,
+    ref: 'Room',
+    default: null,
+  },
   role: {
     type: String,
     enum: ['User', 'Admin'],
@@ -39,5 +52,6 @@ const UserSchema = new Schema({
 });
 const User = mongoose.model('User', UserSchema);
 
-exports.UserSchema = UserSchema;
-exports.User = User;
+// exports.UserSchema = UserSchema;
+// exports.User = User;
+module.exports = User;

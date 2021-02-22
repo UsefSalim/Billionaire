@@ -3,6 +3,8 @@ const express = require('express');
 const router = express.Router();
 
 const { register, login, logout } = require('../controllers/auth.controller');
+const { auth } = require('../middleware/auth.middleware');
+
 // const { auth } = require('../middleware/Auth.middleware');
 /// * ------------------------- Auth Route
 
@@ -22,6 +24,6 @@ router.post('/login', login);
      Desc    : logout Auth
      @Access : Pubic
 */
-router.post('/logout', logout);
+router.post('/logout', auth, logout);
 
 module.exports = router;

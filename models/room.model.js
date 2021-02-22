@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const { UserSchema } = require('./user.model');
 
 const { Schema } = mongoose;
 
@@ -10,6 +9,7 @@ const RoomSchema = new Schema({
     {
       type: Schema.Types.ObjectId,
       ref: 'User',
+      // default: null,
     },
   ],
   status: {
@@ -18,6 +18,7 @@ const RoomSchema = new Schema({
   },
   place: {
     type: Number,
+    required: true,
   },
 });
 
