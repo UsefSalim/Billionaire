@@ -3,9 +3,7 @@ const express = require('express');
 const router = express.Router();
 
 const { register, login, logout } = require('../controllers/auth.controller');
-const { auth } = require('../middleware/auth.middleware');
 
-// const { auth } = require('../middleware/Auth.middleware');
 /// * ------------------------- Auth Route
 
 /* ! @Route  : POST => api/auth/register
@@ -24,6 +22,6 @@ router.post('/login', login);
      Desc    : logout Auth
      @Access : Pubic
 */
-router.post('/logout', auth, logout);
+router.post('/logout', logout);
 
 module.exports = router;

@@ -12,11 +12,12 @@ const { log: terminal } = console;
 
 const authAPi = require('./routes/auth.routes');
 const roomApi = require('./routes/room.routes');
+const adminApi = require('./routes/admin.routes');
 // Middleware
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
-process.env.NODE_ENV === 'developpement' && app.use(morgan('tiny'));
+process.env.NODE_ENV === 'developpement' && app.use(morgan('dev'));
 
 // Db Connexion
 mongoose
@@ -29,7 +30,8 @@ mongoose
 // Routes
 
 app.use('/api/auth', authAPi);
-app.use('/api/admin/room', roomApi);
+app.use('/api/profile', roomApi);
+app.use('/api/admin', adminApi);
 
 // app express
 app.listen(PORT, () => {

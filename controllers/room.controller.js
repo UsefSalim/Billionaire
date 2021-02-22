@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 const mongoose = require('mongoose');
 const Fawn = require('fawn');
 
@@ -16,26 +17,18 @@ exports.profile = async (req, res) => {
     const currentUser = await User.findOne({ _id: res.userId }).select(
       '-password'
     );
-    if (currentUser.role === 'Admin') {
-      const invalidUser = await User.find({ is_valid: false }).select(
-        '-password'
-      );
-      return res.status(200).json({ invalidUser });
-    }
-    if (currentUser.role === 'User') {
-      if (currentUser.is_valid === false)
-        return res.status(200).json({
-          message:
-            "votre compte n'est pas valider vous allé recevoir un mail de validation",
-        });
-      if (currentUser.disponible === false)
-        return res.status(200).json({
-          message: "vous faite deja partie d'une room",
-        });
-      const allRoom = await Room.find().populate('users', 'name');
-      const roomDispo = allRoom.filter((room) => room.users.length <= 3);
-      return res.status(200).json({ currentUser, roomDispo });
-    }
+    if (currentUser.is_valid === false)
+      return res.status(200).json({
+        message:
+          "votre compte n'est pas valider vous allé recevoir un mail de validation",
+      });
+    if (currentUser.disponible === false)
+      return res.status(200).json({
+        message: "vous faite deja partie d'une room",
+      });
+    const allRoom = await Room.find().populate('users', 'name');
+    const roomDispo = allRoom.filter((room) => room.users.length <= 3);
+    return res.status(200).json({ currentUser, roomDispo });
   } catch (error) {
     res.status(200).json(error);
   }
@@ -53,15 +46,10 @@ exports.createRoom = async (req, res) => {
         message:
           "votre compte n'est pas valider vous allé recevoir un mail de validation",
       });
-    if (currentUser.role === 'Admin')
-      return res
-        .status(400)
-        .json({ message: "l'admin ne peux pas crée de room" });
     if (currentUser.disponible === false)
       return res
         .status(400)
         .json({ message: "vous faite deja partie d'une room" });
-    console.log(`number user ${currentUser.number}`);
     const createRoom = new Room({ users: currentUser._id, place: 3 });
     const newFawn = new Fawn.Task()
       .update(
@@ -94,10 +82,6 @@ exports.rejoindreRoom = async (req, res) => {
         message:
           "votre compte n'est pas valider vous allé recevoir un mail de validation",
       });
-    if (currentUser.role === 'Admin')
-      return res
-        .status(400)
-        .json({ message: "l'admin ne peux pas crée de room" });
     const currentRoom = await Room.findOne({ _id: req.params.id });
     if (!currentRoom)
       return res.status(400).json({ message: 'room non disponnible' });
@@ -118,7 +102,6 @@ exports.rejoindreRoom = async (req, res) => {
           .json({ message: 'vous faite deja partie de cette room ' });
       }
     });
-    console.log('avant task');
     const createdQuery = new Fawn.Task()
       .update(
         'rooms',

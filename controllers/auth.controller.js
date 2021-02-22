@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 // -------------require models----------  //
@@ -12,8 +13,8 @@ const {
 // --------------- create Token ------------//
 const maxAge = 3 * 24 * 60 * 60 * 1000;
 
-const createToken = (id) =>
-  jwt.sign({ id }, process.env.SECRET_TOKEN, {
+const createToken = (id, role) =>
+  jwt.sign({ id, role }, process.env.SECRET_TOKEN, {
     expiresIn: maxAge,
   });
 
@@ -78,7 +79,7 @@ exports.login = async (req, res) => {
     ifUserExist.online = true;
     ifUserExist.save();
     // Add JsonWebToken
-    const token = createToken(ifUserExist._id);
+    const token = createToken(ifUserExist._id, ifUserExist.role);
     /// secure:true  deployement Mode !!!
     res.cookie('log_token', token, { httpOnly: true, maxAge });
     return res.status(200).json({ message: token });
