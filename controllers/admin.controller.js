@@ -1,5 +1,8 @@
 const nodemailer = require('nodemailer');
+const bcrypt = require('bcrypt');
 const User = require('../models/user.model');
+const { registerValidations } = require('../validations/auth.validation');
+const { register } = require('./auth.controller');
 /* ! @Route  : POST => api/admin/
      Desc    : admin profile
      @Access : Private / Admin
@@ -51,4 +54,37 @@ exports.validUser = async (req, res) => {
      Desc    : create admin account
      @Access : Private / Admin
 */
-exports.createAdmin = (req, res) => {};
+exports.createAdmin = async (req, res) => {
+  try {
+    // verification if number exist
+    await User.findOne({ number: req.body.number }, (err, data) => {
+      if (err) {
+        return res.status(400).json({
+          message: 'ce compte est deja existant veillez vous connecter',
+        });
+      }
+    });
+    // error validations
+    const { error } = registerValidations(req.body);
+    if (error) return res.status(400).json(error.details[0].message);
+    /// create User
+    const registerAdmin = new User({
+      ...req.body,
+    });
+    /// Hash the password
+    const salt = await bcrypt.genSalt(10);
+    const hashdPassword = await bcrypt.hash(req.body.password, salt);
+    registerAdmin.password = hashdPassword;
+    registerAdmin.is_valid = true;
+    registerAdmin.role = 'Admin';
+
+    // insert User In de DataBase
+    const addAdmin = await registerAdmin.save();
+    if (addAdmin)
+      return res
+        .status(201)
+        .json({ message: `Admin ${req.body.name} created succefully` });
+  } catch (err) {
+    return res.status(400).json({ catchmessage: err });
+  }
+};
