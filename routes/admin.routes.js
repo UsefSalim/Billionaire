@@ -59,18 +59,18 @@ router.post('/addquestion', adminAuth, addquestion);
      Desc    : Delete One question
      @Access : Pubic
 */
-router.delete('question/:id', adminAuth, deletquestion);
+router.delete('/question/:id', adminAuth, deletquestion);
 
 /* ! @Route  : DELETE => api/admin/questions
      Desc    : Delete All questions
      @Access : Pubic
 */
-router.delete('/', adminAuth, deletAllquestions);
+router.delete('/questions', adminAuth, deletAllquestions);
 
 /* ! @Route  : PUT => api/admin/question/:id
      Desc    : UPDATE  question
      @Access : Pubic
 */
-router.put('/:id', adminAuth, updatequestion);
+router.put('/question/:id', adminAuth, updatequestion);
 
 module.exports = router;
