@@ -13,6 +13,7 @@ const { log: terminal } = console;
 const authAPi = require('./routes/auth.routes');
 const roomApi = require('./routes/room.routes');
 const adminApi = require('./routes/admin.routes');
+
 // Middleware
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));

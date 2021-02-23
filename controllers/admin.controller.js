@@ -1,9 +1,11 @@
 const nodemailer = require('nodemailer');
 const bcrypt = require('bcrypt');
 const User = require('../models/user.model');
+const Room = require('../models/room.model');
+const Question = require('../models/question.model');
 const { registerValidations } = require('../validations/auth.validation');
-const { register } = require('./auth.controller');
-/* ! @Route  : POST => api/admin/
+
+/* ! @Route  : GET => api/admin/
      Desc    : admin profile
      @Access : Private / Admin
 */
@@ -12,12 +14,15 @@ exports.profile = async (req, res) => {
     const UserInvalide = await User.find({ is_valid: false }).select(
       'name number email'
     );
-    return res.status(200).json(UserInvalide);
+    const RoomDispo = await Room.find().populate('users', 'name');
+    return res
+      .status(200)
+      .json({ userInvalid: UserInvalide, allRooms: RoomDispo });
   } catch (error) {
     return res.status(400).json(error);
   }
 };
-/* ! @Route  : POST => api/admin/valideuser/:id
+/* ! @Route  : GET => api/admin/valideuser/:id
      Desc    : valid user account
      @Access : Private / Admin
 */
@@ -50,7 +55,7 @@ exports.validUser = async (req, res) => {
   }
 };
 
-/* ! @Route  : POST => api/admin/createadmin
+/* ! @Route  : GET => api/admin/createadmin
      Desc    : create admin account
      @Access : Private / Admin
 */
