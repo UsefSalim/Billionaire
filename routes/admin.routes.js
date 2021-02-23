@@ -46,7 +46,7 @@ router.get('/questions', adminAuth, getAll);
      Desc    : Get One  question
      @Access : Pubic
 */
-router.get('/:id', adminAuth, getOne);
+router.get('/question/:id', adminAuth, getOne);
 
 /* ! @Route  : POST => api/admin/question
      Desc    : Create question
@@ -59,7 +59,7 @@ router.post('/addquestion', adminAuth, addquestion);
      Desc    : Delete One question
      @Access : Pubic
 */
-router.delete('/:id', adminAuth, deletquestion);
+router.delete('question/:id', adminAuth, deletquestion);
 
 /* ! @Route  : DELETE => api/admin/questions
      Desc    : Delete All questions
