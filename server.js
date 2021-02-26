@@ -8,11 +8,17 @@ const mongoose = require('mongoose');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+const { log: terminal } = console;
+
+const authAPi = require('./routes/auth.routes');
+const roomApi = require('./routes/room.routes');
+const adminApi = require('./routes/admin.routes');
+
 // Middleware
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
-process.env.NODE_ENV === 'developpement' && app.use(morgan('tiny'));
+process.env.NODE_ENV === 'developpement' && app.use(morgan('dev'));
 
 // Db Connexion
 mongoose
@@ -20,11 +26,15 @@ mongoose
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
-  .then(() => console.log('Mongo Db Connected'))
-  .catch((err) => console.log(`error connection to the DataBase : ${err}`));
+  .then(() => terminal('Mongo Db Connected'))
+  .catch((err) => terminal(`error connection to the DataBase : ${err}`));
 // Routes
+
+app.use('/api/auth', authAPi);
+app.use('/api/profile', roomApi);
+app.use('/api/admin', adminApi);
 
 // app express
 app.listen(PORT, () => {
-  console.log(`app listning : localhost:${PORT}`);
+  terminal(`app listning : localhost:${PORT}`);
 });
