@@ -29,9 +29,6 @@ exports.profile = async (req, res) => {
 exports.validUser = async (req, res) => {
   try {
     const user = await User.find({ _id: req.params.id });
-    console.log('--------------------');
-    console.log(user.email);
-    console.log('--------------------');
     const transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {

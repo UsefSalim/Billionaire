@@ -3,7 +3,6 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 // -------------require models----------  //
 const User = require('../models/user.model');
-
 // -------------require validations----------  //
 const {
   registerValidations,
@@ -24,17 +23,16 @@ const createToken = (id, role) =>
 */
 exports.register = async (req, res) => {
   try {
-    // verification if number exist
-    await User.findOne({ number: req.body.number }, (err, data) => {
-      if (err) {
-        return res.status(400).json({
-          message: 'ce compte est deja existant veillez vous connecter',
-        });
-      }
-    });
     // error validations
     const { error } = registerValidations(req.body);
     if (error) return res.status(400).json(error.details[0].message);
+    // verification if number exist
+    const ifUserExist = await User.findOne({ number: req.body.number });
+    if (ifUserExist) {
+      return res.status(400).json({
+        message: 'ce compte est deja existant veillez vous connecter',
+      });
+    }
     /// create User
     const registerUser = new User({
       ...req.body,
@@ -44,7 +42,7 @@ exports.register = async (req, res) => {
     const hashdPassword = await bcrypt.hash(req.body.password, salt);
     registerUser.password = hashdPassword;
 
-    // insert User In de DataBase
+    // insert User In the DataBase
     const addUser = await registerUser.save();
     if (addUser)
       return res
@@ -77,10 +75,9 @@ exports.login = async (req, res) => {
     if (!validPassword)
       return res.status(400).json({ message: 'mail or password incorrect' });
     ifUserExist.online = true;
-    ifUserExist.save();
+    // ifUserExist.save();
     // Add JsonWebToken
     const token = createToken(ifUserExist._id, ifUserExist.role);
-    /// secure:true  deployement Mode !!!
     res.cookie('log_token', token, { httpOnly: true, maxAge });
     return res.status(200).json({ message: token });
   } catch (error) {

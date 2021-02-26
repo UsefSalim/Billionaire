@@ -12,7 +12,6 @@ const Room = require('../models/room.model');
      @Access : Private
 */
 exports.profile = async (req, res) => {
-  // const idUser =
   try {
     const currentUser = await User.findOne({ _id: res.userId }).select(
       '-password'
@@ -64,7 +63,7 @@ exports.createRoom = async (req, res) => {
       )
       .save('rooms', createRoom)
       .run({ useMongoose: true });
-    return res.status(200).json(newFawn);
+    return res.status(200).json(createRoom, currentUser);
   } catch (error) {
     res.status(400).json({ message: 'mablanch' });
   }
@@ -124,7 +123,7 @@ exports.rejoindreRoom = async (req, res) => {
         }
       )
       .run({ useMongoose: true });
-    if (createdQuery) return res.status(201).json({ createdQuery });
+    if (createdQuery) return res.status(201).json({});
   } catch (error) {
     return res.status(400).json({ error1: error });
   }
