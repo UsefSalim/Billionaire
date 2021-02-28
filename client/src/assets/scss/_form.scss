@@ -279,3 +279,27 @@
     font-size: 40px;
   }
 }
+
+
+.alert {
+  padding: 10px;
+  background-color: #f44336;
+  color: white;
+  border-radius: 10px;
+  margin: 15px 0;
+}
+
+.closebtn {
+
+  color: black;
+  font-weight: bold;
+  // float: right;
+  font-size: 12px;
+  line-height: 20px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.closebtn:hover {
+  color: black;
+}

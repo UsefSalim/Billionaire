@@ -62,24 +62,31 @@ exports.login = async (req, res) => {
     // error validations
     const { error } = loginValidations(req.body);
     if (error)
-      return res.status(400).json(`validation ${error.details[0].message}`);
+      return res.status(403).send({
+        auth: false,
+        message: `${error.details[0].message}`,
+      });
     // verification if number exist
     const ifUserExist = await User.findOne({ number: req.body.number });
     if (!ifUserExist)
-      return res.status(400).json({ message: 'mail or password incorrect' });
+      return res
+        .status(403)
+        .send({ auth: false, message: 'numero or password incorrect' });
     // verif password
     const validPassword = await bcrypt.compare(
       req.body.password,
       ifUserExist.password
     );
     if (!validPassword)
-      return res.status(400).json({ message: 'mail or password incorrect' });
+      return res
+        .status(403)
+        .json({ auth: false, message: 'numero or password incorrect' });
     ifUserExist.online = true;
     // ifUserExist.save();
     // Add JsonWebToken
     const token = createToken(ifUserExist._id, ifUserExist.role);
     res.cookie('log_token', token, { httpOnly: true, maxAge });
-    return res.status(200).json({ message: token });
+    return res.status(200).json({ role: ifUserExist.role });
   } catch (error) {
     return res.status(400).json(error);
   }

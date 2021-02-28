@@ -5,6 +5,7 @@ export default class Accueil extends Component {
     isOpen: false,
     form: null,
   };
+ 
   loginHandelClick = () => {
     this.setState({
       isOpen: true,
